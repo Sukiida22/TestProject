@@ -1,0 +1,116 @@
+#include "stdafx.h"
+#include "proye.h"
+#include <windows.h>
+#include "resource.h"
+#include <stdlib.h>
+#include <iostream>
+#include <tchar.h>
+#include <string>
+
+
+
+HINSTANCE hInst;
+HWND hwnd;
+BOOL CALLBACK InfoDoc(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK MainMenu(HWND, UINT, WPARAM, LPARAM);
+BOOL CALLBACK NewApp(HWND, UINT, WPARAM, LPARAM);
+
+INT CALLBACK WinMain(
+	_In_ HINSTANCE hInstance,
+	_In_ HINSTANCE hInstanceP,
+	_In_ LPSTR Msg,
+	_In_ int CmdShow
+) {
+	hInst = hInstance;
+	hwnd = CreateDialog(
+		hInstance,
+		MAKEINTRESOURCE(IDD_HOMEMENU),
+		0,
+		MainMenu
+	);
+
+	ShowWindow(hwnd, CmdShow);
+	MSG msg;
+	ZeroMemory(&msg, sizeof(msg));
+
+	while (GetMessage(&msg, 0, 0, 0)) {
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+	}
+	return 0;
+}
+
+BOOL CALLBACK MainMenu(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+	switch (message) {
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDB_INFODOC:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_INFODOC), hwnd, InfoDoc);
+			PostQuitMessage(0);
+			break;
+		case IDB_NEWAPP:
+			DialogBox(hInst, MAKEINTRESOURCE(IDD_NEWAPP), hwnd, NewApp);
+			break;
+		case WM_DESTROY:
+			PostQuitMessage(0);
+			break;
+		}
+		break;
+
+	default:
+		return DefWindowProc(hwnd, message, wParam, lParam);
+	}
+	return 0;
+
+}
+
+BOOL CALLBACK InfoDoc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+	switch (message) {
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+
+		case IDOK: //boton para abrir 
+			int result = MessageBox(hwnd, "Test1", "Test11", MB_OKCANCEL);
+			switch (result) {
+			case MB_OKCANCEL:
+				EndDialog(hwnd, 0);
+				break;
+			}
+			break;
+		}
+		break;
+	case WM_DESTROY:
+		EndDialog(hwnd, 0);
+		return TRUE;
+	default:
+		return DefWindowProc(hwnd, message, wParam, lParam);
+	}
+	return 0;
+
+}
+
+BOOL CALLBACK NewApp(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+	switch (message) {
+	case WM_COMMAND:
+		switch (LOWORD(wParam)) {
+		case IDOK:
+			int result = MessageBox(hwnd, "Test2", "Test22", MB_OKCANCEL);
+			switch (result) {
+			case MB_OKCANCEL:
+				EndDialog(hwnd, 0);
+				break;
+			}
+			break;
+		}
+		break;
+	case WM_DESTROY:
+		EndDialog(hwnd, 0);
+		return TRUE;
+	default:
+		return DefWindowProc(hwnd, message, wParam, lParam);
+	}
+	return 0;
+}
